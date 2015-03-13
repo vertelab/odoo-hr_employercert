@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="hr_attendance.view_attendance_who"/>
             <field name="arch" type="xml">
                 <field name="action" position="after">
-                    <field name="planned_hours" sum="Total Hours"/>
+                    <field name="working_hours_on_day" sum="Total Hours"/>
                     <field name="worked_hours" sum="Worked Hours"/>
                     <field name="over_hours" sum="Overtime Hours"/>
                     <field name="absent_hours" sum="Absent Hours"/>
@@ -22,7 +22,7 @@
             <field name="inherit_id" ref="hr_attendance.view_attendance_form"/>
             <field name="arch" type="xml">
                 <field name="action_desc" position="after">
-                    <field name="planned_hours" string="Total Hours"/>
+                    <field name="working_hours_on_day" string="Total Hours"/>
                     <field name="worked_hours" string="Worked Hours" sum="Worked Hours"/>
                     <field name="over_hours" string="Overtime Hours"/>
                     <field name="absent_hours" string="Absent Hours"/>
