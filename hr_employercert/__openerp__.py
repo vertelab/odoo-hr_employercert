@@ -15,7 +15,7 @@ Manage your employee.
     """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['hr_attendance', 'hr_timesheet', 'hr_contract', 'hr_payroll', 'hr_holidays', 'resource', 'mail'],
+    'depends': ['hr_attendance', 'hr_timesheet', 'hr_contract', 'hr_payroll', 'hr_holidays', 'mail'],
     'data': ['hr_employercert_view.xml',
        ],
     #'demo': [''],
