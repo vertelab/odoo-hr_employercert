@@ -13,7 +13,7 @@ class hr_attendance(models.Model):
     @api.one
     def _working_hours(self):
         contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
-        if contract:
+        if contract and self.action == 'sign_out':
             self.working_hours_on_day = self.pool.get('resource.calendar').working_hours_on_day(self.env.cr, self.env.uid,
                 contract.working_hours, fields.Datetime.from_string(self.name))
         else:
@@ -22,3 +22,5 @@ class hr_attendance(models.Model):
     working_hours_on_day = fields.Float(compute='_working_hours', string='Planned Hours')
     over_hours = fields.Float(default=0.0)
     absent_hours = fields.Float(default=0.0)
+    
+
