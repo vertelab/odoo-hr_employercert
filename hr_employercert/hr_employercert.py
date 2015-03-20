@@ -14,14 +14,6 @@ class hr_attendance(models.Model):
     _inherit = 'hr.attendance'
 
     @api.one
-    def _compute_working_calendar(self):    # working schadule in contract
-        contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
-        if contract and self.action == 'sign_out':
-            self.compute_working_calendar = self.pool.get('resource.resource').compute_working_calendar(self.env.cr, self.env.uid)[3]
-        else:
-            self.compute_working_calendar = None
-
-    @api.one
     def _working_hours_on_day(self): # working hours on the contract
         contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
         if contract and self.action == 'sign_out':
@@ -29,6 +21,22 @@ class hr_attendance(models.Model):
                 contract.working_hours, fields.Datetime.from_string(self.name))
         else:
             self.working_hours_on_day = 0.0
+
+    @api.one
+    def _get_working_hours(self): # worked hours in schedule
+        contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
+        if contract and self.action == 'sign_out':
+            _logger.info("get_working_hours %s" % self.pool.get('resource.calendar').get_working_hours(
+                self.env.cr, self.env.uid,
+                self.employee_id.contract_ids[0].working_hours.id, datetime.strptime(
+                self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
+            self.get_working_hours = self.pool.get('resource.calendar').get_working_hours(self.env.cr, self.env.uid,
+                self.employee_id.contract_ids[0].working_hours.id,
+                datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT))
+        else:
+            self.get_working_hours = False
 
     @api.one
     def _last_signin(self): # last sign in time
@@ -41,29 +49,76 @@ class hr_attendance(models.Model):
             ], limit=1, order='name DESC')
             if last_signin:
                 return last_signin.name
+        else:
+            pass
 
-    @api.one
-    def _in_schedule_hours(self):    # actually work hours of an employee
-        if self.action == 'sign_out':
-            contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
-            _logger.info("get_working_intervals_of_day %s" % self.pool.get('resource.calendar').get_working_intervals_of_day(
-                self.env.cr, self.env.uid,
-                self.employee_id.contract_ids[0].working_hours.id, datetime.strptime(
-                self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
-            self.in_schedule_hours = 0.0
-            for t in self.pool.get('resource.calendar').get_working_intervals_of_day(
-                self.env.cr, self.env.uid,
-                self.employee_id.contract_ids[0].working_hours.id,
-                datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)):
-                self.in_schedule_hours += (t[1] - t[0]).seconds / 3600.0
+    #~ @api.one
+    #~ def _in_schedule_hours(self):    # worked hours in schedule
+        #~ contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
+        #~ if contract and self.action == 'sign_out':
+            #~ _logger.info("get_working_intervals_of_day %s" % self.pool.get('resource.calendar').get_working_intervals_of_day(
+                #~ self.env.cr, self.env.uid,
+                #~ self.employee_id.contract_ids[0].working_hours.id, datetime.strptime(
+                #~ self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
+            #~ self.in_schedule_hours = 0.0
+            #~ for t in self.pool.get('resource.calendar').get_working_intervals_of_day(
+                #~ self.env.cr, self.env.uid,
+                #~ self.employee_id.contract_ids[0].working_hours.id,
+                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)):
+                #~ self.in_schedule_hours += (t[1] - t[0]).seconds / 3600.0
+        #~ else:
+            #~ self.in_schedule_hours = False
                 
-    
+    @api.one
+    def _over_hours(self):    # overtime hours
+        contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
+        if contract and self.action == 'sign_out':
+            t = self.pool.get('resource.calendar').get_working_intervals_of_day(
+                self.env.cr, self.env.uid,
+                self.employee_id.contract_ids[0].working_hours.id)
+            if len(t) > 0:
+                if datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT) < t[0][0]:
+                    self.over_hours += (t[0][0] - datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT)).seconds / 3600.0
+                if datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT) > t[-1][1]:
+                    self.over_hours += (datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT) - t[-1][1]).seconds / 3600.0
+            else:
+                self.over_hours = False
+        else:
+            self.over_hours = False
+            
+    #~ @api.one
+    #~ def _absent_hours(self):    # absent hours
+        #~ contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
+        #~ if contract and self.action == 'sign_out':
+            #~ _logger.info("get_working_hours %s" % self.pool.get('resource.calendar').get_working_intervals_of_day(
+                #~ self.env.cr, self.env.uid,
+                #~ self.employee_id.contract_ids[0].working_hours.id,
+                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
+            #~ t = self.pool.get('resource.calendar').get_working_intervals_of_day(
+                #~ self.env.cr, self.env.uid,
+                #~ self.employee_id.contract_ids[0].working_hours.id,
+                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
+                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT))
+            #~ if len(t) > 0:
+                #~ if datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT) > t[0][0]:
+                    #~ self.absent_hours += (datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT) - t[0][0]).seconds / 3600.0
+                #~ if datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT) < t[-1][1]:
+                    #~ self.absent_hours += (t[-1][1] - datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)).seconds / 3600.0
+            #~ else:
+                #~ self.absent_hours = False
+        #~ else:
+            #~ self.absent_hours = False
+
     working_hours_on_day = fields.Float(compute='_working_hours_on_day', string='Planned Hours')
-    #compute_working_calendar = fields.Text(compute='_compute_working_calendar', string='compute_working_calendar')
-    in_schedule_hours = fields.Float(compute='_in_schedule_hours', string='Worked in schedule (h)')
-    over_hours = fields.Float(default=0.0, string='Over time (h)')
-    absent_hours = fields.Float(default=0.0, string='Absent time (h)')
+    get_working_hours = fields.Float(compute='_get_working_hours', string='Worked in schedule (h)')
+    #in_schedule_hours = fields.Float(compute='_in_schedule_hours', string='Worked in schedule (h)')
+    over_hours = fields.Float(compute='_over_hours', string='Over time (h)')
+    #absent_hours = fields.Float(compute='_absent_hours', string='Absent time (h)')
     last_signin = fields.Datetime(compute='_last_signin')
+
+class mail_thread(models.AbstractModel):
+    _inherit = 'mail.thread'
 
