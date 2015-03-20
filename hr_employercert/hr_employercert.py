@@ -119,6 +119,6 @@ class hr_attendance(models.Model):
     #absent_hours = fields.Float(compute='_absent_hours', string='Absent time (h)')
     last_signin = fields.Datetime(compute='_last_signin')
 
-class mail_thread(models.AbstractModel):
-    _inherit = 'mail.thread'
+class hr_employee(models.Model):
+    _inherit = 'hr.employee'
 

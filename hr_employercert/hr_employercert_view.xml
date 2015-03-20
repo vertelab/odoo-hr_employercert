@@ -51,7 +51,7 @@
 <!--
         <record id="view_he_message_log" model="ir.ui.view">
             <field name="name">hr.employercert.message.log.form</field>
-            <field name="model">mail.thread</field>
+            <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr_attendance.view_attendance_form"/>
             <field name="arch" type="xml">
                 <sheet position="after">
