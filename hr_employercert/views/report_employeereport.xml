@@ -9,8 +9,11 @@
                 <div class="oe_structure"/>
                 <h2>Employee Report: <span t-esc="o.name"/></h2>
                 <table>
-                    <span t-esc="o.employee_id"/>
-                    <span t-esc="o.name"/>
+                    <span t-esc="o.id"/>
+                    <span t-esc="hr_attendance"/>
+                    <div t-foreach="hr_attendance" t-as="a">
+                         <span t-esc="a.worked_hours"/>
+                    </div>
                 </table>
                 </div>
             </t>

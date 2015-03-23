@@ -122,3 +122,18 @@ class hr_attendance(models.Model):
 class hr_employee(models.Model):
     _inherit = 'hr.employee'
 
+
+class ParticularReport(models.AbstractModel):
+    _name = 'report.hr_employercert.report_employeereport'
+    @api.multi
+    def render_html(self, data=None):
+        _logger.info("Yee im in report")
+        report_obj = self.env['report']
+        report = report_obj._get_report_from_name('hr_employercert.report_employeereport')
+        docargs = {
+            'doc_ids': self._ids,
+            'doc_model': report.model,
+            'docs': self.env['hr.employee'].search([]),
+            'hr_attendance': self.env['hr.attendance'].search([]),
+        }
+        return report_obj.render('hr_employercert.report_employeereport', docargs)

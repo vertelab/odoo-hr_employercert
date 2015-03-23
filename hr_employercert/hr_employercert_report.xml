@@ -3,7 +3,7 @@
     <data>
         <report
             id="action_report_hremployercert"
-            model="hr.attendance"
+            model="hr.employee"
             string="Employee Report"
             report_type="qweb-html"
             name="hr_employercert.report_employeereport"
