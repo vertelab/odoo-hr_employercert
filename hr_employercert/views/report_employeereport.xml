@@ -1,17 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+<template id="report_employeereport">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="report.internal_layout">
+                <div class="page">
+                <div class="oe_structure"/>
+                <h2>Employee Report: <span t-esc="o.name"/></h2>
+                <table>
+                    <span t-esc="o.employee_id"/>
+                    <span t-esc="o.name"/>
+                </table>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+        
+<!--
         <template id="report_employeereport">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
                     <t t-call="report.external_layout">
                         <div class="page">
                             <h2>Employee Report: </h2>
-                            <p>We are family</p>
+                            <table>
+
+                                <t t-foreach="report_table" t-as="row">
+                                    <td><span t-esc="row.label"/></td>
+                                    <td><span t-esc="row.working_hours_on_day"/></td>
+                                    <td><span t-esc="row.worked_hours"/></td>
+                                    <td><span t-esc="row.over_hours"/></td>
+                                    <td><span t-esc="row.absent_hours"/></td>
+                               </t>
+
+                             </table>
                         </div>
                     </t>
                 </t>
             </t>
         </template>
+-->
     </data>
 </openerp>
+
+
+
