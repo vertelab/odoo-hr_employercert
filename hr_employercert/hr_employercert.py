@@ -122,19 +122,22 @@ class hr_attendance(models.Model):
 class hr_employee(models.Model):
     _inherit = 'hr.employee'
 
-class ParticularReport(models.AbstractModel):
+class EmployeeReport(models.AbstractModel):
     _name = 'report.hr_employercert.report_employeereport'
+    _inherit = ['hr.attendance', 'hr.contract']
+    
     @api.multi
     def render_html(self, data=None):
-        _logger.info("Yee im in report")
+        _logger.info("Reporting")
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('hr_employercert.report_employeereport')
         attendance = self.env['hr.attendance'].search([('employee_id', '=', self.id)])
-        #~ report_table = []
-        #~ for month in [('Jan','100','131'),('Feb','200','229'),('Mar','300','331')]:
-            #~ for attendance in self.env['hr.attendance'].search([('employee_id', '=', self.id),('name','>',month[1]),('name','<=',month[2])]):
-                #~ self.worked_hours += attendance.worked_hours
-                #~ self.over_hours += attendance.over_hours
+        contract = self.env['hr.contract'].search([])
+        report_table = []
+        #~ for month in [('Jan',100,131),('Feb',200,229),('Mar',300,331)]:
+            #~ for a in self.env['hr.attendance'].search([('employee_id', '=', self.id),(self.name.day,'>',month[1]),(self.name.day,'<=',month[2])]):
+                #~ self.worked_hours += a.worked_hours
+                #~ self.over_hours += a.over_hours
             #~ report_table.append({
                 #~ 'label': month[0],
                 #~ 'working_hours_on_day': self.env['resource.calendar'].working_hours_on_day(self.env.cr, self.env.uid, contract.working_hours, fields.Datetime.from_string(self.name)),
@@ -145,8 +148,9 @@ class ParticularReport(models.AbstractModel):
         docargs = {
             'doc_ids': self._ids,
             'doc_model': report.model,
-            'docs': self.env['hr.employee'].search([]),
+            'docs': self.env['hr.employee'].browse(self._ids),
             'attendance': self.env['hr.attendance'].search([]),
-            #'report_table': report_table
+            'contract': contract,
+            'report_table': report_table,
         }
         return report_obj.render('hr_employercert.report_employeereport', docargs)
