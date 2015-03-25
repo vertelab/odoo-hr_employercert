@@ -162,40 +162,38 @@ class EmployeeReport(models.AbstractModel):
                     first_year = False
                     last_year = False
                 
-            if last_year:
-                for year in [last_year, first_year]:
-                    for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-02-28 23:59:59'),
-                                ('Mar','-03-01 00:00:00','-03-31 23:59:59'),('Apr','-04-01 00:00:00','-04-30 23:59:59'),
-                                ('May','-05-01 00:00:00','-05-31 23:59:59'),('Jun','-06-01 00:00:00','-06-30 23:59:59'),
-                                ('Jul','-07-01 00:00:00','-07-31 23:59:59'),('Aug','-08-01 00:00:00','-08-31 23:59:59'),
-                                ('Sep','-09-01 00:00:00','-09-30 23:59:59'),('Oct','-10-01 00:00:00','-10-31 23:59:59'),
-                                ('Nov','-11-01 00:00:00','-11-30 23:59:59'),('Dec','-12-01 00:00:00','-12-31 23:59:59'),
-                                ]:
-                                    
-                        start_day = str(year) + day[1]
-                        end_day = str(year) + day[2]
-                        _logger.info('start_day: %s end_day: %s' % (start_day, end_day))
-                        worked_hours = 0.0
-                        over_hours = 0.0
-                        for a in emp.env['hr.attendance'].search([('employee_id', '=', emp.id),
-                                                                    ('name','>=',start_day),
-                                                                    ('name','<=',end_day)]):
-                            worked_hours += a.worked_hours
-                            over_hours += a.over_hours
-                            
-                        planned_ids = contract.working_hours.get_working_hours(fields.Datetime.from_string(start_day), fields.Datetime.from_string(end_day)),
-                        for p in planned_ids:
-                            planned_hours = p[0]
-                        _logger.info('planned_hours: %s worked_hours: %s' % (planned_hours, worked_hours))
-                        report_table.append({
-                            'label': day[0],
-                            'planned_hours': planned_hours,
-                            'worked_hours': worked_hours,
-                            'over_hours': over_hours,
-                            'absent_hours': planned_hours - worked_hours,
-                        })
-            else:
-                _logger.info("Contract: %s has not end date..." % employee)
+            for year in [last_year, first_year]:
+                for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-02-28 23:59:59'),
+                            ('Mar','-03-01 00:00:00','-03-31 23:59:59'),('Apr','-04-01 00:00:00','-04-30 23:59:59'),
+                            ('May','-05-01 00:00:00','-05-31 23:59:59'),('Jun','-06-01 00:00:00','-06-30 23:59:59'),
+                            ('Jul','-07-01 00:00:00','-07-31 23:59:59'),('Aug','-08-01 00:00:00','-08-31 23:59:59'),
+                            ('Sep','-09-01 00:00:00','-09-30 23:59:59'),('Oct','-10-01 00:00:00','-10-31 23:59:59'),
+                            ('Nov','-11-01 00:00:00','-11-30 23:59:59'),('Dec','-12-01 00:00:00','-12-31 23:59:59'),
+                            ]:
+                                
+                    start_day = str(year) + day[1]
+                    end_day = str(year) + day[2]
+                    _logger.info('start_day: %s end_day: %s' % (start_day, end_day))
+                    worked_hours = 0.0
+                    over_hours = 0.0
+                    for a in emp.env['hr.attendance'].search([('employee_id', '=', emp.id),
+                                                                ('name','>=',start_day),
+                                                                ('name','<=',end_day)]):
+                        worked_hours += a.worked_hours
+                        over_hours += a.over_hours
+                        
+                    planned_ids = contract.working_hours.get_working_hours(fields.Datetime.from_string(start_day), fields.Datetime.from_string(end_day)),
+                    for p in planned_ids:
+                        planned_hours = p[0]
+                    _logger.info('planned_hours: %s worked_hours: %s' % (planned_hours, worked_hours))
+                    report_table.append({
+                        'label': day[0],
+                        'planned_hours': planned_hours,
+                        'worked_hours': worked_hours,
+                        'over_hours': over_hours,
+                        'absent_hours': planned_hours - worked_hours,
+                    })
+
         docargs = {
             'doc_ids': self._ids,
             'doc_model': report.model,

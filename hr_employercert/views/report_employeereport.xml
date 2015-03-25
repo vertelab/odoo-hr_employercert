@@ -27,11 +27,13 @@
             <p>---------------------------------------------------------------------------------</p>
             <table>
                 <tr>
-                <td>Action</td><td>Time</td><td>Worked Hours</td>
+                <td>Month</td><td/><td>Worked Hours</td><td/><td>Over Hours</td><td/><td>Absent Hours</td>
                 </tr>
                 <tr t-foreach="report_table" t-as="a">
                     <td t-esc="a['label']"/><td/>
+<!--
                     <td t-esc="a['planned_hours']"/><td/>
+-->
                     <td t-esc="a['worked_hours']"/><td/>
                     <td t-esc="a['over_hours']"/><td/>
                     <td t-esc="a['absent_hours']"/><td/>
