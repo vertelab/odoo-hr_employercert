@@ -8,31 +8,33 @@
             <div class="oe_structure"/>
             <h2>Employee Report</h2>
             <table>
-                <h4>Personal Data</h4>
+                <h3>Personal Data</h3>
                 <tr t-foreach="docs" t-as="e">
                     <tr><td> First Name: </td><td t-esc="e.name"/></tr>
                     <tr><td> Last Name: </td><td t-esc="e.name"/></tr>
                     <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
                 </tr>
             </table>
-            <p>--------------------------------------------------</p>
+            <p>---------------------------------------------------------------------------------</p>
             <table>
-                <h4>Contract</h4>
+                <h3>Contract</h3>
                 <tr t-foreach="contract" t-as="c">
                     <tr><td> Employment from: </td><td t-esc="c.date_start"/><td/><td> To: </td><td t-esc="c.date_end"/><td/></tr>
                     <tr><td> Job Position: </td><td t-esc="c.job_id"/></tr>
                     <tr><td> Job Schedule: </td><td t-esc="c.working_hours"/></tr>
                 </tr>
             </table>
-            <p>--------------------------------------------------</p>
+            <p>---------------------------------------------------------------------------------</p>
             <table>
                 <tr>
                 <td>Action</td><td>Time</td><td>Worked Hours</td>
                 </tr>
-                <tr t-foreach="attendance" t-as="a">
-                    <td t-esc="a.action"/><td/>
-                    <td t-esc="a.name"/><td/>
-                    <td t-esc="a.worked_hours"/><td/>
+                <tr t-foreach="report_table" t-as="a">
+                    <td t-esc="a['label']"/><td/>
+                    <td t-esc="a['planned_hours']"/><td/>
+                    <td t-esc="a['worked_hours']"/><td/>
+                    <td t-esc="a['over_hours']"/><td/>
+                    <td t-esc="a['absent_hours']"/><td/>
                 </tr>
                 
             </table>
