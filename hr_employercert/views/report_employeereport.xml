@@ -1,74 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-<template id="report_employeereport">
-    <t t-call="report.html_container">
-        <t t-call="report.internal_layout">
-            <div class="page">
-            <div class="oe_structure"/>
-            <h2>Employee Report</h2>
-            <table>
-                <h3>Personal Data</h3>
-                <tr t-foreach="docs" t-as="e">
-                    <tr><td> First Name: </td><td t-esc="e.name"/></tr>
-                    <tr><td> Last Name: </td><td t-esc="e.name"/></tr>
-                    <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
-                </tr>
-            </table>
-            <p>---------------------------------------------------------------------------------</p>
-            <table>
-                <h3>Contract</h3>
-                <tr t-foreach="contract" t-as="c">
-                    <tr><td> Employment from: </td><td t-esc="c.date_start"/><td/><td> To: </td><td t-esc="c.date_end"/><td/></tr>
-                    <tr><td> Job Position: </td><td t-esc="c.job_id"/></tr>
-                    <tr><td> Job Schedule: </td><td t-esc="c.working_hours"/></tr>
-                </tr>
-            </table>
-            <p>---------------------------------------------------------------------------------</p>
-            <table>
-                <tr>
-                <td>Month</td><td/><td>Worked Hours</td><td/><td>Over Hours</td><td/><td>Absent Hours</td>
-                </tr>
-                <tr t-foreach="report_table" t-as="a">
-                    <td t-esc="a['label']"/><td/>
-<!--
-                    <td t-esc="a['planned_hours']"/><td/>
--->
-                    <td t-esc="a['worked_hours']"/><td/>
-                    <td t-esc="a['over_hours']"/><td/>
-                    <td t-esc="a['absent_hours']"/><td/>
-                </tr>
-                
-            </table>
-            </div>
-        </t>
-    </t>
-</template>
-
-<!--
         <template id="report_employeereport">
             <t t-call="report.html_container">
-                <t t-foreach="docs" t-as="o">
-                    <t t-call="report.external_layout">
-                        <div class="page">
-                            <h2>Employee Report: </h2>
-                            <table>
-
-                                <t t-foreach="report_table" t-as="row">
-                                    <td><span t-esc="row.label"/></td>
-                                    <td><span t-esc="row.working_hours_on_day"/></td>
-                                    <td><span t-esc="row.worked_hours"/></td>
-                                    <td><span t-esc="row.over_hours"/></td>
-                                    <td><span t-esc="row.absent_hours"/></td>
-                               </t>
-
-                             </table>
-                        </div>
-                    </t>
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                    <div class="oe_structure"/>
+                    <h2>Employee Report</h2>
+                    <table>
+                        <tr t-foreach="docs" t-as="e">
+                            <tr><td> Last Name: </td><td t-esc="e.name"/><td> First Name: </td><td t-esc="e.name"/></tr>
+                            <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
+                            <tr><td> Employment from: </td><td t-esc="e.contract_ids[0].date_start"/><td/>
+                            <td> To: </td><td t-esc="e.contract_ids[0].date_end"/><td/></tr>
+                            <tr><td> Job Position: </td><td t-esc="e.contract_ids[0].job_id.name"/></tr>
+                            <tr><td> Job Schedule: </td><td t-esc="e.contract_ids[0].working_hours.name"/></tr>
+                        </tr>
+                    </table>    
+                    <table>
+                        <tr>
+                        <td>Month</td><td/><td>Worked Hours</td><td/><td>Over Hours</td><td/><td>Absent Hours</td>
+                        </tr>
+                        <tr t-foreach="report_table" t-as="a">
+                            <td t-esc="a['label']"/><td/>
+                            <td t-esc="a['worked_hours']"/><td/>
+                            <td t-esc="a['over_hours']"/><td/>
+                            <td t-esc="a['absent_hours']"/><td/>
+                        </tr>
+                    </table>
+                    </div>
                 </t>
             </t>
         </template>
--->
     </data>
 </openerp>
 

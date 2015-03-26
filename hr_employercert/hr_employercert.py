@@ -52,25 +52,6 @@ class hr_attendance(models.Model):
         else:
             pass
 
-    #~ @api.one
-    #~ def _in_schedule_hours(self):    # worked hours in schedule
-        #~ contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
-        #~ if contract and self.action == 'sign_out':
-            #~ _logger.info("get_working_intervals_of_day %s" % self.pool.get('resource.calendar').get_working_intervals_of_day(
-                #~ self.env.cr, self.env.uid,
-                #~ self.employee_id.contract_ids[0].working_hours.id, datetime.strptime(
-                #~ self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
-            #~ self.in_schedule_hours = 0.0
-            #~ for t in self.pool.get('resource.calendar').get_working_intervals_of_day(
-                #~ self.env.cr, self.env.uid,
-                #~ self.employee_id.contract_ids[0].working_hours.id,
-                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)):
-                #~ self.in_schedule_hours += (t[1] - t[0]).seconds / 3600.0
-        #~ else:
-            #~ self.in_schedule_hours = False
-                
     @api.one
     def _over_hours(self):    # overtime hours
         contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
@@ -87,36 +68,10 @@ class hr_attendance(models.Model):
                 self.over_hours = False
         else:
             self.over_hours = False
-            
-    #~ @api.one
-    #~ def _absent_hours(self):    # absent hours
-        #~ contract = self.employee_id.contract_ids[0] if self.employee_id and self.employee_id.contract_ids else False
-        #~ if contract and self.action == 'sign_out':
-            #~ _logger.info("get_working_hours %s" % self.pool.get('resource.calendar').get_working_intervals_of_day(
-                #~ self.env.cr, self.env.uid,
-                #~ self.employee_id.contract_ids[0].working_hours.id,
-                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)))
-            #~ t = self.pool.get('resource.calendar').get_working_intervals_of_day(
-                #~ self.env.cr, self.env.uid,
-                #~ self.employee_id.contract_ids[0].working_hours.id,
-                #~ datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT),
-                #~ datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT))
-            #~ if len(t) > 0:
-                #~ if datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT) > t[0][0]:
-                    #~ self.absent_hours += (datetime.strptime(self._last_signin()[0], tools.DEFAULT_SERVER_DATETIME_FORMAT) - t[0][0]).seconds / 3600.0
-                #~ if datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT) < t[-1][1]:
-                    #~ self.absent_hours += (t[-1][1] - datetime.strptime(self.name, tools.DEFAULT_SERVER_DATETIME_FORMAT)).seconds / 3600.0
-            #~ else:
-                #~ self.absent_hours = False
-        #~ else:
-            #~ self.absent_hours = False
 
     working_hours_on_day = fields.Float(compute='_working_hours_on_day', string='Planned Hours')
     get_working_hours = fields.Float(compute='_get_working_hours', string='Worked in schedule (h)')
-    #in_schedule_hours = fields.Float(compute='_in_schedule_hours', string='Worked in schedule (h)')
     over_hours = fields.Float(compute='_over_hours', string='Over time (h)')
-    #absent_hours = fields.Float(compute='_absent_hours', string='Absent time (h)')
     last_signin = fields.Datetime(compute='_last_signin')
 
 class hr_employee(models.Model):
@@ -124,7 +79,6 @@ class hr_employee(models.Model):
 
 class EmployeeReport(models.AbstractModel):
     _name = 'report.hr_employercert.report_employeereport'
-    #_inherit = ['hr.attendance']
 
     @api.multi
     def render_html(self, data=None):
@@ -140,7 +94,7 @@ class EmployeeReport(models.AbstractModel):
                 year_end = datetime.strptime(contract.date_end + ' 00:00:00', tools.DEFAULT_SERVER_DATETIME_FORMAT).year
                 if year_begin == fields.datetime.today().year or year_begin == year_end:
                     last_year = year_begin
-                    first_year = False
+                    first_year = year_begin
                 elif year_end <= fields.datetime.today().year:
                     last_year = year_end
                     first_year = last_year - 1
@@ -148,31 +102,33 @@ class EmployeeReport(models.AbstractModel):
                     last_year = fields.datetime.today().year
                     first_year = last_year - 1
                 else:   # if both begin date and end date are after this year
-                    first_year = False
-                    last_year = False
+                    first_year = fields.datetime.today().year
+                    last_year = fields.datetime.today().year
             else:
                 year_begin = datetime.strptime(contract.date_start + ' 00:00:00', tools.DEFAULT_SERVER_DATETIME_FORMAT).year
                 if year_begin == fields.datetime.today().year:
                     last_year = year_begin
-                    first_year = False
+                    first_year = year_begin
                 elif year_begin < fields.datetime.today().year:
                     last_year = fields.datetime.today().year
                     first_year = last_year - 1
                 else:   # if begin date is after this year
-                    first_year = False
-                    last_year = False
+                    first_year = fields.datetime.today().year
+                    last_year = fields.datetime.today().year
                 
             for year in [last_year, first_year]:
-                for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-02-28 23:59:59'),
+                for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-03-01 23:59:59'),
                             ('Mar','-03-01 00:00:00','-03-31 23:59:59'),('Apr','-04-01 00:00:00','-04-30 23:59:59'),
                             ('May','-05-01 00:00:00','-05-31 23:59:59'),('Jun','-06-01 00:00:00','-06-30 23:59:59'),
                             ('Jul','-07-01 00:00:00','-07-31 23:59:59'),('Aug','-08-01 00:00:00','-08-31 23:59:59'),
                             ('Sep','-09-01 00:00:00','-09-30 23:59:59'),('Oct','-10-01 00:00:00','-10-31 23:59:59'),
                             ('Nov','-11-01 00:00:00','-11-30 23:59:59'),('Dec','-12-01 00:00:00','-12-31 23:59:59'),
                             ]:
-                                
                     start_day = str(year) + day[1]
-                    end_day = str(year) + day[2]
+                    if day[0] == _('Feb'):
+                        end_day = '%s-02-%s 23:59:59' % (year, (datetime(year, 3, 1) - timedelta(days = 1)).day)
+                    else:
+                        end_day = str(year) + day[2]
                     _logger.info('start_day: %s end_day: %s' % (start_day, end_day))
                     worked_hours = 0.0
                     over_hours = 0.0
@@ -189,16 +145,15 @@ class EmployeeReport(models.AbstractModel):
                     report_table.append({
                         'label': day[0],
                         'planned_hours': planned_hours,
-                        'worked_hours': worked_hours,
-                        'over_hours': over_hours,
-                        'absent_hours': planned_hours - worked_hours,
+                        'worked_hours': '%.2f' % worked_hours,
+                        'over_hours': '%.2f' % over_hours,
+                        'absent_hours': '%.2f' % (planned_hours - worked_hours),
                     })
 
         docargs = {
             'doc_ids': self._ids,
             'doc_model': report.model,
             'docs': self.env['hr.employee'].browse(self._ids),
-            'contract': contract,
             'report_table': report_table,
         }
         return report_obj.render('hr_employercert.report_employeereport', docargs)
