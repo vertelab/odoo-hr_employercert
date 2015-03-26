@@ -9,14 +9,15 @@
                     <h2>Employee Report</h2>
                     <table>
                         <tr t-foreach="docs" t-as="e">
-                            <tr><td> Last Name: </td><td t-esc="e.name"/><td> First Name: </td><td t-esc="e.name"/></tr>
-                            <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
-                            <tr><td> Employment from: </td><td t-esc="e.contract_ids[0].date_start"/><td/>
-                            <td> To: </td><td t-esc="e.contract_ids[0].date_end"/><td/></tr>
-                            <tr><td> Job Position: </td><td t-esc="e.contract_ids[0].job_id.name"/></tr>
-                            <tr><td> Job Schedule: </td><td t-esc="e.contract_ids[0].working_hours.name"/></tr>
+                                <td style="position: absolute; left: 90px; top: 90px;" t-esc="e.name"/>
+                                <td t-esc="e.name"/>
+                                <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
+                                <tr><td> Employment from: </td><td t-esc="e.contract_ids[0].date_start"/><td/>
+                                <td> To: </td><td t-esc="e.contract_ids[0].date_end"/><td/></tr>
+                                <tr><td> Job Position: </td><td t-esc="e.contract_ids[0].job_id.name"/></tr>
+                                <tr><td> Job Schedule: </td><td t-esc="e.contract_ids[0].working_hours.name"/></tr>
                         </tr>
-                    </table>    
+                    </table>
                     <table>
                         <tr>
                         <td>Month</td><td/><td>Worked Hours</td><td/><td>Over Hours</td><td/><td>Absent Hours</td>
@@ -28,6 +29,15 @@
                             <td t-esc="a['absent_hours']"/><td/>
                         </tr>
                     </table>
+                    <style>
+                        img {
+                            position: absolute;
+                            left: 0px;
+                            top: 0px;
+                            z-index: -1;
+                            }
+                    </style>
+                    <img src="/hr_employercert/static/img/ai/arbetsgintyg1.png" width="594" height="840"/>
                     </div>
                 </t>
             </t>
