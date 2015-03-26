@@ -6,38 +6,31 @@
                 <t t-call="report.internal_layout">
                     <div class="page">
                     <div class="oe_structure"/>
-                    <h2>Employee Report</h2>
-                    <table>
-                        <tr t-foreach="docs" t-as="e">
-                                <td style="position: absolute; left: 90px; top: 90px;" t-esc="e.name"/>
-                                <td t-esc="e.name"/>
-                                <tr><td> Personal ID: </td><td t-esc="e.identification_id"/></tr>
-                                <tr><td> Employment from: </td><td t-esc="e.contract_ids[0].date_start"/><td/>
-                                <td> To: </td><td t-esc="e.contract_ids[0].date_end"/><td/></tr>
-                                <tr><td> Job Position: </td><td t-esc="e.contract_ids[0].job_id.name"/></tr>
-                                <tr><td> Job Schedule: </td><td t-esc="e.contract_ids[0].working_hours.name"/></tr>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
-                        <td>Month</td><td/><td>Worked Hours</td><td/><td>Over Hours</td><td/><td>Absent Hours</td>
-                        </tr>
-                        <tr t-foreach="report_table" t-as="a">
-                            <td t-esc="a['label']"/><td/>
-                            <td t-esc="a['worked_hours']"/><td/>
-                            <td t-esc="a['over_hours']"/><td/>
-                            <td t-esc="a['absent_hours']"/><td/>
-                        </tr>
-                    </table>
-                    <style>
-                        img {
-                            position: absolute;
-                            left: 0px;
-                            top: 0px;
-                            z-index: -1;
-                            }
-                    </style>
-                    <img src="/hr_employercert/static/img/ai/arbetsgintyg1.png" width="594" height="840"/>
+                        <table>
+                        <img style="position: absolute; left: 0px; top: 0px; z-index: -1;" src="/hr_employercert/static/img/ai/arbetsgintyg1.png" width="594" height="840"/>
+                        <img style="position: absolute; left: 0px; top: 840px; z-index: -1;" src="/hr_employercert/static/img/ai/arbetsgintyg2.png" width="594" height="840"/>    
+                            <tr t-foreach="docs" t-as="e">
+                                <td style="position: absolute; left: 80px; top: 90px;" t-esc="e.name"/>
+                                <td style="position: absolute; left: 250px; top: 90px;" t-esc="e.name"/>
+                                <td style="position: absolute; left: 420px; top: 90px;" t-esc="e.identification_id"/>
+                                <td style="position: absolute; left: 190px; top: 145px;" t-esc="e.contract_ids[0].date_start"/>
+                                <td style="position: absolute; left: 360px; top: 145px;" t-esc="e.contract_ids[0].date_end"/>
+                                <td style="position: absolute; left: 190px; top: 168px;" t-esc="e.contract_ids[0].job_id.name"/>
+                                <td style="position: absolute; left: 200px; top: 215px;" t-esc="e.contract_ids[0].working_hours.name"/>
+                            </tr>
+                        </table>
+                        <table>
+                            <tr t-foreach="report_table_first" t-as="a">
+                                <td style="position: absolute; left: 110px; top: 988px;" t-esc="a['worked_hours']"/><td/>
+                                <td style="position: absolute; left: 155px; top: 988px;" t-esc="a['absent_hours']"/><td/>
+                                <td style="position: absolute; left: 220px; top: 988px;" t-esc="a['over_hours']"/><td/>
+                            </tr>
+                            <tr t-foreach="report_table_last" t-as="a">
+                                <td style="position: absolute; left: 362px; top: 988px;" t-esc="a['worked_hours']"/><td/>
+                                <td style="position: absolute; left: 408px; top: 988px;" t-esc="a['absent_hours']"/><td/>
+                                <td style="position: absolute; left: 467px; top: 988px;" t-esc="a['over_hours']"/><td/>
+                            </tr>
+                       </table>
                     </div>
                 </t>
             </t>

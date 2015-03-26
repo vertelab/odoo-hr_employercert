@@ -88,7 +88,8 @@ class EmployeeReport(models.AbstractModel):
         for emp in self.env['hr.employee'].browse(self._ids):
             attendance = emp.env['hr.attendance'].search([('employee_id', '=', emp.id)])
             contract = emp.contract_ids[0] if emp.contract_ids else False
-            report_table = []
+            report_table_first = []
+            report_table_last = []
             if contract.date_end:
                 year_begin = datetime.strptime(contract.date_start + ' 00:00:00', tools.DEFAULT_SERVER_DATETIME_FORMAT).year
                 year_end = datetime.strptime(contract.date_end + ' 00:00:00', tools.DEFAULT_SERVER_DATETIME_FORMAT).year
@@ -116,7 +117,7 @@ class EmployeeReport(models.AbstractModel):
                     first_year = fields.datetime.today().year
                     last_year = fields.datetime.today().year
                 
-            for year in [last_year, first_year]:
+            for year in [first_year]:
                 for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-03-01 23:59:59'),
                             ('Mar','-03-01 00:00:00','-03-31 23:59:59'),('Apr','-04-01 00:00:00','-04-30 23:59:59'),
                             ('May','-05-01 00:00:00','-05-31 23:59:59'),('Jun','-06-01 00:00:00','-06-30 23:59:59'),
@@ -142,7 +143,41 @@ class EmployeeReport(models.AbstractModel):
                     for p in planned_ids:
                         planned_hours = p[0]
                     _logger.info('planned_hours: %s worked_hours: %s' % (planned_hours, worked_hours))
-                    report_table.append({
+                    report_table_first.append({
+                        'label': day[0],
+                        'planned_hours': planned_hours,
+                        'worked_hours': '%.2f' % worked_hours,
+                        'over_hours': '%.2f' % over_hours,
+                        'absent_hours': '%.2f' % (planned_hours - worked_hours),
+                    })
+                    
+            for year in [last_year]:
+                for day in [('Jan','-01-01 00:00:00','-01-31 23:59:59'),('Feb','-02-01 00:00:00','-03-01 23:59:59'),
+                            ('Mar','-03-01 00:00:00','-03-31 23:59:59'),('Apr','-04-01 00:00:00','-04-30 23:59:59'),
+                            ('May','-05-01 00:00:00','-05-31 23:59:59'),('Jun','-06-01 00:00:00','-06-30 23:59:59'),
+                            ('Jul','-07-01 00:00:00','-07-31 23:59:59'),('Aug','-08-01 00:00:00','-08-31 23:59:59'),
+                            ('Sep','-09-01 00:00:00','-09-30 23:59:59'),('Oct','-10-01 00:00:00','-10-31 23:59:59'),
+                            ('Nov','-11-01 00:00:00','-11-30 23:59:59'),('Dec','-12-01 00:00:00','-12-31 23:59:59'),
+                            ]:
+                    start_day = str(year) + day[1]
+                    if day[0] == _('Feb'):
+                        end_day = '%s-02-%s 23:59:59' % (year, (datetime(year, 3, 1) - timedelta(days = 1)).day)
+                    else:
+                        end_day = str(year) + day[2]
+                    _logger.info('start_day: %s end_day: %s' % (start_day, end_day))
+                    worked_hours = 0.0
+                    over_hours = 0.0
+                    for a in emp.env['hr.attendance'].search([('employee_id', '=', emp.id),
+                                                                ('name','>=',start_day),
+                                                                ('name','<=',end_day)]):
+                        worked_hours += a.worked_hours
+                        over_hours += a.over_hours
+                        
+                    planned_ids = contract.working_hours.get_working_hours(fields.Datetime.from_string(start_day), fields.Datetime.from_string(end_day)),
+                    for p in planned_ids:
+                        planned_hours = p[0]
+                    _logger.info('planned_hours: %s worked_hours: %s' % (planned_hours, worked_hours))
+                    report_table_last.append({
                         'label': day[0],
                         'planned_hours': planned_hours,
                         'worked_hours': '%.2f' % worked_hours,
@@ -154,6 +189,7 @@ class EmployeeReport(models.AbstractModel):
             'doc_ids': self._ids,
             'doc_model': report.model,
             'docs': self.env['hr.employee'].browse(self._ids),
-            'report_table': report_table,
+            'report_table_first': report_table_first,
+            'report_table_last': report_table_last,
         }
         return report_obj.render('hr_employercert.report_employeereport', docargs)
