@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <report
+            id="action_report_hremployercert"
+            model="hr.employee"
+            string="Employee Report"
+            report_type="qweb-html"
+            name="hr_employercert.report_employeereport"
+            file="hr_employercert.report_employeereport"
+        />
+        <record id="action_report_hremployercert" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="report.paperformat_euro"/>
+        </record>
+    </data>
+</openerp>

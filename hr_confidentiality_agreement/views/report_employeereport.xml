@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_employeereport">
+            <t t-call="report.html_container">
+                <t t-call="report.internal_layout">
+                    <div class="page">
+                    <div class="oe_structure"/>
+                    <style>
+                        span{font-size: 0.5em;}
+                    </style>
+                        <div>
+                        <img style="position: absolute; left: 0px; top: 0px; z-index: -1;" src="/hr_employercert/static/img/ai/arbetsgintyg1.png" width="297" height="420"/>
+                        <img style="position: absolute; left: 0px; top: 420px; z-index: -1;" src="/hr_employercert/static/img/ai/arbetsgintyg2.png" width="297" height="420"/>    
+                            <t t-foreach="docs" t-as="e">
+                                <span style="position: absolute; left: 40px; top: 45px;" t-esc="e.name"/>
+                                <span style="position: absolute; left: 210px; top: 45px;" t-esc="e.identification_id"/>
+                                <span style="position: absolute; left: 210px; top: 446px;" t-esc="e.identification_id"/>
+                                <span style="position: absolute; left: 95px; top: 72px;" t-esc="e.contract_ids[0].date_start"/>
+                                <span style="position: absolute; left: 180px; top: 72px;" t-esc="e.contract_ids[0].date_end"/>
+                                <span style="position: absolute; left: 95px; top: 84px;" t-esc="e.contract_ids[0].job_id.name"/>
+                                <span style="position: absolute; left: 100px; top: 107px;" t-esc="e.contract_ids[0].working_hours.name"/>
+                            </t>
+                        </div>
+                        <div>
+                            <t t-if="report_table_last">
+                                <span style="position: absolute; left: 90px; top: 473px;" t-esc="report_table_last[0]['year']"/>
+                                <t t-set="coo_y" t-value="494"/>    <!-- set a begin y-coordinate value -->
+                                <t t-foreach="report_table_last" t-as="a">
+                                    <span t-att-style="'position: absolute; left: 50px; top: %spx;' % coo_y" t-esc="a['worked_hours']"/>
+                                    <span t-att-style="'position: absolute; left: 78px; top: %spx;' % coo_y" t-esc="a['absent_hours']"/>
+                                    <span t-att-style="'position: absolute; left: 105px; top: %spx;' % coo_y" t-esc="a['over_hours']"/> 
+                                    <t t-set="coo_y" t-value="coo_y+10"/>   <!-- after each loop increase y-coordinate value by 10 pixels -->
+                                </t>
+                            </t>
+                            <t t-if="report_table_first">
+                            <span style="position: absolute; left: 217px; top: 473px;" t-esc="report_table_first[0]['year']"/>
+                            <t t-set="coo_y" t-value="494"/>
+                                <t t-foreach="report_table_first" t-as="a">
+                                    <span t-att-style="'position: absolute; left: 176px; top: %spx;' % coo_y" t-esc="a['worked_hours']"/>
+                                    <span t-att-style="'position: absolute; left: 204px; top: %spx;' % coo_y" t-esc="a['absent_hours']"/>
+                                    <span t-att-style="'position: absolute; left: 231px; top: %spx;' % coo_y" t-esc="a['over_hours']"/> 
+                                    <t t-set="coo_y" t-value="coo_y+10"/>
+                                </t>
+                            </t>
+                       </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
+
+
+
