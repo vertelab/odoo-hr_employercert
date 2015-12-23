@@ -18,9 +18,11 @@ Report that is an internship certificate
     """,
     'author': 'Vertel AB',
     'website': 'http://www.vertel.se',
-    'depends': ['hr',],
+    'depends': ['hr_contract',],
     'data': [
-        'hr_internship_certificate_report.xml',
+        'hr_internship_certificate_data.xml',
+        'hr_internship_certificate_view.xml',
+ #       'hr_internship_certificate_report.xml',
        ],
     'installable': True,
 }

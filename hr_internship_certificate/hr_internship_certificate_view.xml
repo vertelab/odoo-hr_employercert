@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data>
+    <record id="hr_contract_view_form" model="ir.ui.view">
+      <field name="name">hr.contract.internship.form</field>
+      <field name="model">hr.contract</field>
+      <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+      <field name="arch" type="xml">
+        <page name="information" position="after">
+          <page string="Internship" attrs="{'invisible': [('type_id','=',3)]}">
+            <group>
+              <field name="work_description" placeholder="has been developing Odoo-modules at the IT-department. One special assigment was ..."   />
+              <field name="work_skills" placeholder="the performed tasks demanded accuracy and good knowledge in the python programming language."/>
+              <field name="work_performance" placeholder="has shown good problem solving skills, he has demonstrated the ability to communicate and present his work and collaborate with others." />
+            </group>
+          </page>
+        </page>
+      </field>
+    </record>
+  </data>
+</openerp>

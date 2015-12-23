@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+  <data noupdate="1">
+    <!-- Contract Types -->
+    <record id="hr_contract_type_internship" model="hr.contract.type">
+      <field name="name">Internship</field>
+    </record>
+  </data>
+</openerp>

@@ -1,152 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
-        <report
-            id="intern_certificate_report"
-            model="hr.employee"
-            string="Intern Certificate"
-            report_type="qweb-html"
-            name="hr_intern_certificate.intern_certificate_report"
-            file="hr_intern_certificate.intern_certificate_report"
-            attachment_use="True"
-            attachment="('intern_certificate_'+(object.name or ''))+'.pdf'"
-        />
-        
-        
-       <template id="intern_certificate_report">
-            <t t-call="report.html_container">
-                <t t-foreach="doc_ids" t-as="doc_id">
-                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'hr_intern_certificate.intern_certificate_document')"/>
-                </t>
-            </t>
-        </template> 
+  <data>
+    <report id="intern_certificate_report" model="hr.employee" string="Intern Certificate" report_type="qweb-html" name="hr_intern_certificate.intern_certificate_report" file="hr_intern_certificate.intern_certificate_report" attachment_use="True" attachment="('intern_certificate_'+(object.name or ''))+'.pdf'" />
+    <template id="intern_certificate_report">
+      <t t-call="report.html_container">
+        <t t-foreach="doc_ids" t-as="doc_id">
+          <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'hr_intern_certificate.intern_certificate_document')" />
+        </t>
+      </t>
+    </template>
+    <template id="hr_intern_certificate.intern_certificate_document">
+      <t t-call="report.external_layout">
+        <div class="page">
+          <div class="oe_structure" />
+          <div class="row">
+            <div class="col-xs-6">
+              <section class="para_large">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-12 mb16 mt16">
+                      <div style="text-align: right;" t-field="time.date" />
+                      <h1>Intern Certificate</h1>
+                      <p>
+                        <span t-field="employee_id.name" />
+                        ,
+                        <t t-if="employee_id.identification_id">
+                          <span t-field="employee_id.identification_id" />
+                          ,
+                        </t>
+                        have, during the period
+                        <t t-if="date_start" t-field="date_start" />
+                        <t t-if="trial_date_start" t-field="trial_date_start" />
+                        -
+                        <t t-if="date_start" t-field="date_end" />
+                        <t t-if="trial_date_end" t-field="trial_date_end" />
+                        completed his internship wihtin the framework of the training program
+                        <t t-field="training_program" />
+                        with us at
+                        <t t-field="company.name" />
+                        <t t-if="employee_id.department_id" t-field="employee_id.department_id.name" />
+                        <t t-if="employee_id.job_id">
+                          as
+                          <t t-field="employee_id.job_id.name" />
+                          . The job
+                          <t t-field="employee_id.job_id.description" />
+                        </t>
+                        .
+                        
+                        
 
-        <template id="hr_intern_certificate.intern_certificate_document">
-            <t t-call="report.external_layout">
-                <div class="page">
-                    <div class="oe_structure"/>
-                    <div class="row">
-                        <div class="col-xs-6">
-                       <section class="para_large">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-12 mb16 mt16">
-                <div style="text-align: right;" t-field="time.date"/>
-                <h1>Intern Certificate</h1>
-                
-                <p><span t-field="name"/>,<span t-field="number"/> has, during the period of 
-                
-                Name, social security number, have, during the period 201X-XX-XX empty 201X-XX-XX completed his internship within the framework of the training Programme name with us on the company Company name.
-Name has worked ... (brief description of the example tasks, organizational placement, powers, special assignments and projects)
-This work requires ... (the required skills such as proficiency, experience and training as well as the personal qualities required in this position such as accuracy, speed, responsibility, ability to organize, prioritize, decide, plan, communicate, motivate staff, follow up as well as creative skills)
-Name has performed duties ... (description of tasks performed and how well the skills requirements (see above) have been met. Short description of the personal qualities and skills that are relevant to the work)
-
-Signature
-Printed name
-Title
-Contact Details
-                .</p>
-
-<br/>
-
-                <table class="table table-bordered table-responsive">
-                  <tbody>
-                    <tr>
-                      <td/>
-                      <td>
-                        <strong>​Server Name</strong>
-                      </td>
-                      <td>
-                        <strong>​Port</strong>
-                      </td>
-                      <td>
-                        <strong>​SSL/TSL</strong>
-                      </td>
-                      <td>
-                        <strong>​Authentication</strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>​Incomming (IMAP)</td>
-                      <td t-raw="'imap.' + (o.company_id.domain or 'example.com')"/>
-                      <td>​143</td>
-                      <td>​STARTTLS</td>
-                      <td>​Lösenord</td>
-                    </tr>
-                    <tr>
-                      <td>Outgoing​ (SMTP)</td>
-                      <td t-raw="'smtp.' + (o.company_id.domain or 'example.com')"/>
-                      <td>​587</td>
-                      <td>STARTTLS​</td>
-                      <td>​Lösenord</td>
-                    </tr>
-                    <tr>
-                      <td>​Username</td>
-                      <td t-raw="o.login" colspan="4"/>
-                    </tr>
-                    <tr>
-                      <td>Password</td>
-                      <td t-raw="o.passwd_mail" colspan="4"/>
-                    </tr>
-
-                  </tbody>
-                </table>
-
-<H1>Webmail</H1>
-                <p>This is your credentials for webmail.</p>
-
-                <table class="table table-bordered table-responsive">
-                  <tbody>
-                    <tr>
-                      <td>
-                        URL
-                      </td>
-                         <td t-raw="'http://epost.' + (o.company_id.domain or 'example.com')"/>
-
-                    </tr>
-
-                    <tr>
-                      <td>​Username</td>
-                      <td colspan="4" t-raw="o.login"/>
-                    </tr>
-                    <tr>
-                      <td>Password</td>
-                      <td colspan="4" t-raw="o.passwd_mail" />
-                    </tr>
-                  </tbody>
-                </table>
-
-               
-              </div>
+                      </p>
+                      <p>
+                        <t t-field="employee_id.name" />
+                        has
+                        <t t-field="employee_id.job_id.description" />
+                        . this work requires
+                        <t t-field="employee_id.job_id.requirements" />
+                        .
+                      </p>
+                      <p>
+                        <t t-field="employee_id.name" />
+                        has performed duties
+                        <t t-field="work_performance" />
+                        .
+                      </p>
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <br />
+                      <t t-if="employee_id.coach_id" t-field="employee_id.coach_id.name" />
+                      <t t-if="not employee_id.coach_id" t-field="employee_id.parent_id.name" />
+                      <t t-field="company_id.name" />
+                      <t t-if="employee_id.coach_id">
+                        <t t-field="employee_id.coach_id.title" />
+                        <t t-field="employee_id.coach_id.phone" />
+                        <t t-field="employee_id.coach_id.mobile" />
+                        <t t-field="employee_id.coach_id.email" />
+                      </t>
+                      <t t-if="not employee_id.coach_id" t-field="employee_id.parent_id.title" />
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
-        </section>
+          <div class="oe_structure" />
+        </div>
+      </t>
+    </template>
+    
 
-                        </div>
-                    </div>
-                    <div class="oe_structure"/>
-                </div>
-            </t>
-        </template>
-
-        
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        <record id="action_report_hremployercert" model="ir.actions.report.xml">
-            <field name="paperformat_id" ref="report.paperformat_euro"/>
-        </record>
-    </data>
+  </data>
 </openerp>
