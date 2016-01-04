@@ -2,6 +2,48 @@
 <openerp>
   <data>
     <record id="hr_contract_view_form" model="ir.ui.view">
+      <field name="name">hr.contract.employee_certification.form</field>
+      <field name="model">hr.contract</field>
+      <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+      <field name="arch" type="xml">
+        <page name="information" position="after">
+          <page string="Employee Certificate">
+            <group>
+              <field name="work_description" placeholder="has been developing Odoo-modules at the IT-department. One special assigment was ..."   />
+              <field name="work_description_legend"/>              
+              <field name="work_skills" placeholder="the performed tasks demanded accuracy and good knowledge in the python programming language."/>
+              <field name="work_skills_legend"/>
+            </group>
+          </page>
+          <page string="Service Record">
+            <group>
+              <field name="work_performance" placeholder="has shown good problem solving skills, he has demonstrated the ability to communicate and present his work and collaborate with others." />
+              <field name="work_performance_legend"/>
+            </group>
+          </page>
+        </page>
+      </field>
+    </record>
+    
+    
+    <record id="hr_contract_type_view_form" model="ir.ui.view">
+            <field name="name">hr.contract.type.view.form</field>
+            <field name="model">hr.contract.type</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_type_view_form" />
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                
+                        <field colspan="4" name="certification_letter"/>
+                        <field colspan="4" name="service_record"/>
+                        <separator colspan="4" string="Legend"/>       
+                        <field colspan="4" name="certificate_legend"/>
+                    
+                </field>
+            </field>
+        </record>
+    
+    
+    <record id="hr_contract_view_form" model="ir.ui.view">
       <field name="name">hr.contract.internship.form</field>
       <field name="model">hr.contract</field>
       <field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
@@ -17,5 +59,18 @@
         </page>
       </field>
     </record>
+    
+    <record id="view_company_form" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">
+                <field name="website" position="after">
+                    <field name="description" />
+                </field>
+          </field>
+   </record>
+
+    
   </data>
 </openerp>

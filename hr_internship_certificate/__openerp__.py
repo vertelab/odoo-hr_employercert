@@ -22,7 +22,7 @@ Report that is an internship certificate
     'data': [
         'hr_internship_certificate_data.xml',
         'hr_internship_certificate_view.xml',
- #       'hr_internship_certificate_report.xml',
+        'hr_internship_certificate_report.xml',
        ],
     'installable': True,
 }
