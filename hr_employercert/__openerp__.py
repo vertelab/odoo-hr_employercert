@@ -14,6 +14,7 @@ Manage your employee.
 =========================================================================================================
     """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['hr', 'hr_attendance', 'hr_timesheet', 'hr_contract', 'hr_payroll', 'hr_holidays', 'mail', 'report'],
     'data': [

@@ -17,6 +17,7 @@ Report that is an internship certificate
 
     """,
     'author': 'Vertel AB',
+    'license': 'AGPL-3',
     'website': 'http://www.vertel.se',
     'depends': ['hr_contract',],
     'data': [
